@@ -1,0 +1,36 @@
+package cl.fullstack.orders.publisher;
+
+import cl.fullstack.orders.event.OrderCreatedEvent;
+import cl.fullstack.orders.model.Order;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
+import org.springframework.web.client.RestTemplate;
+
+@Component
+public class OrderEventPublisher {
+
+    private final RestTemplate restTemplate = new RestTemplate();
+
+    @Value("${shipments.observer.url}")
+    private String shipmentsObserverUrl;
+
+    public void publishOrderCreated(Order order) {
+        OrderCreatedEvent event = new OrderCreatedEvent(
+                order.getId(),
+                order.getUserId(),
+                order.getProductId(),
+                order.getQuantity(),
+                order.getTotal(),
+                order.getStatus()
+        );
+
+        restTemplate.postForObject(
+                shipmentsObserverUrl,
+                event,
+                Void.class
+        );
+
+        System.out.println("ORDERS: Evento OrderCreated enviado a Shipments");
+        System.out.println("ORDERS: Pedido publicado: " + order.getId());
+    }
+}
