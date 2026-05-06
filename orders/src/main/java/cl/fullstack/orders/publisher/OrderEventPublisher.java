@@ -15,6 +15,7 @@ public class OrderEventPublisher {
     private String shipmentsObserverUrl;
 
     public void publishOrderCreated(Order order) {
+    try {
         OrderCreatedEvent event = new OrderCreatedEvent(
                 order.getId(),
                 order.getUserId(),
@@ -32,5 +33,10 @@ public class OrderEventPublisher {
 
         System.out.println("ORDERS: Evento OrderCreated enviado a Shipments");
         System.out.println("ORDERS: Pedido publicado: " + order.getId());
+
+    } catch (Exception e) {
+        System.out.println("ORDERS: No se pudo enviar el evento a Shipments");
+        System.out.println("ORDERS: Error: " + e.getMessage());
     }
+}
 }
