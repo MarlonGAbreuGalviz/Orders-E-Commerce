@@ -42,8 +42,9 @@ public class Order {
     @Column(nullable = false, precision = 12, scale = 2)
     private BigDecimal total;
 
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private String status;
+    private OrderStatus status;
 
     @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;
@@ -53,7 +54,7 @@ public class Order {
         this.createdAt = LocalDateTime.now();
 
         if (this.status == null) {
-            this.status = "CREATED";
+            this.status = OrderStatus.CREATED;
         }
     }
 }
