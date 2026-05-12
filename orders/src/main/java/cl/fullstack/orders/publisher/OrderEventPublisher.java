@@ -4,6 +4,7 @@ import cl.fullstack.orders.event.OrderCreatedEvent;
 import cl.fullstack.orders.model.Order;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 @Component
@@ -15,28 +16,28 @@ public class OrderEventPublisher {
     private String shipmentsObserverUrl;
 
     public void publishOrderCreated(Order order) {
-    try {
-        OrderCreatedEvent event = new OrderCreatedEvent(
-                order.getId(),
-                order.getUserId(),
-                order.getProductId(),
-                order.getQuantity(),
-                order.getTotal(),
-                order.getStatus()
-        );
+        try {
+            OrderCreatedEvent event = new OrderCreatedEvent(
+                    order.getId(),
+                    order.getUserId(),
+                    order.getProductId(),
+                    order.getQuantity(),
+                    order.getTotal(),
+                    order.getStatus().name()
+            );
 
-        restTemplate.postForObject(
-                shipmentsObserverUrl,
-                event,
-                Void.class
-        );
+            restTemplate.postForObject(
+                    shipmentsObserverUrl,
+                    event,
+                    Void.class
+            );
 
-        System.out.println("ORDERS: Evento OrderCreated enviado a Shipments");
-        System.out.println("ORDERS: Pedido publicado: " + order.getId());
+            System.out.println("ORDERS: Evento OrderCreated enviado a Shipments");
+            System.out.println("ORDERS: Pedido publicado: " + order.getId());
 
-    } catch (Exception e) {
-        System.out.println("ORDERS: No se pudo enviar el evento a Shipments");
-        System.out.println("ORDERS: Error: " + e.getMessage());
+        } catch (RestClientException e) {
+            System.out.println("ORDERS: No se pudo enviar el evento a Shipments");
+            System.out.println("ORDERS: Error: " + e.getMessage());
+        }
     }
-}
 }
