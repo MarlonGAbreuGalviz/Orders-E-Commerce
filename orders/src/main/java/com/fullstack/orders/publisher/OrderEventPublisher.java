@@ -1,11 +1,12 @@
-package cl.fullstack.orders.publisher;
+package com.fullstack.orders.publisher;
 
-import cl.fullstack.orders.event.OrderCreatedEvent;
-import cl.fullstack.orders.model.Order;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
+
+import com.fullstack.orders.event.OrderCreatedEvent;
+import com.fullstack.orders.model.Order;
 
 @Component
 public class OrderEventPublisher {

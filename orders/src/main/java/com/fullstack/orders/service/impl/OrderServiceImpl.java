@@ -1,13 +1,16 @@
-package cl.fullstack.orders.service.impl;
+package com.fullstack.orders.service.impl;
 
-import cl.fullstack.orders.model.Order;
-import cl.fullstack.orders.model.OrderStatus;
-import cl.fullstack.orders.publisher.OrderEventPublisher;
-import cl.fullstack.orders.repository.OrderRepository;
-import cl.fullstack.orders.service.OrderService;
-import cl.fullstack.orders.strategy.OrderRoleStrategy;
-import cl.fullstack.orders.strategy.OrderRoleStrategyResolver;
 import org.springframework.stereotype.Service;
+
+import com.fullstack.orders.dto.CreateOrderRequest;
+import com.fullstack.orders.event.PaymentApprovedEvent;
+import com.fullstack.orders.model.Order;
+import com.fullstack.orders.model.OrderStatus;
+import com.fullstack.orders.publisher.OrderEventPublisher;
+import com.fullstack.orders.repository.OrderRepository;
+import com.fullstack.orders.service.OrderService;
+import com.fullstack.orders.strategy.OrderRoleStrategy;
+import com.fullstack.orders.strategy.OrderRoleStrategyResolver;
 
 import java.util.List;
 import java.util.UUID;
@@ -30,7 +33,32 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public Order createOrder(Order order) {
+    public Order createOrder(CreateOrderRequest request) {
+        Order order = Order.builder()
+                .userId(request.getUserId())
+                .productId(request.getProductId())
+                .quantity(request.getQuantity())
+                .total(request.getTotal())
+                .status(OrderStatus.CREATED)
+                .build();
+
+        return saveAndPublish(order);
+    }
+
+    @Override
+    public Order createOrderFromPayment(PaymentApprovedEvent event) {
+        Order order = Order.builder()
+                .userId(event.getUserId())
+                .productId(event.getProductId())
+                .quantity(event.getQuantity())
+                .total(event.getTotal())
+                .status(OrderStatus.CREATED)
+                .build();
+
+        return saveAndPublish(order);
+    }
+
+    private Order saveAndPublish(Order order) {
         Order savedOrder = orderRepository.save(order);
 
         orderEventPublisher.publishOrderCreated(savedOrder);

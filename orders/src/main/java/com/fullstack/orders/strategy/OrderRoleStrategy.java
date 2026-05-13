@@ -1,10 +1,10 @@
-package cl.fullstack.orders.strategy;
-
-import cl.fullstack.orders.model.Order;
-import cl.fullstack.orders.model.OrderStatus;
+package com.fullstack.orders.strategy;
 
 import java.util.List;
 import java.util.UUID;
+
+import com.fullstack.orders.model.Order;
+import com.fullstack.orders.model.OrderStatus;
 
 public interface OrderRoleStrategy {
 
