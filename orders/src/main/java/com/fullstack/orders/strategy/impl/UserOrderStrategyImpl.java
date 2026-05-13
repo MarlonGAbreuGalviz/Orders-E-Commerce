@@ -1,12 +1,13 @@
-package cl.fullstack.orders.strategy.impl;
+package com.fullstack.orders.strategy.impl;
 
-import cl.fullstack.orders.model.Order;
-import cl.fullstack.orders.model.OrderStatus;
-import cl.fullstack.orders.repository.OrderRepository;
-import cl.fullstack.orders.strategy.OrderRoleStrategy;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.web.server.ResponseStatusException;
+
+import com.fullstack.orders.model.Order;
+import com.fullstack.orders.model.OrderStatus;
+import com.fullstack.orders.repository.OrderRepository;
+import com.fullstack.orders.strategy.OrderRoleStrategy;
 
 import java.util.List;
 import java.util.UUID;

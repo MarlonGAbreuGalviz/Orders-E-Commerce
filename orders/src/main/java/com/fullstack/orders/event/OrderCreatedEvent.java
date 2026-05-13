@@ -1,4 +1,4 @@
-package cl.fullstack.orders.event;
+package com.fullstack.orders.event;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

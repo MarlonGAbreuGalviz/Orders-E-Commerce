@@ -1,4 +1,4 @@
-package cl.fullstack.orders.model;
+package com.fullstack.orders.model;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
