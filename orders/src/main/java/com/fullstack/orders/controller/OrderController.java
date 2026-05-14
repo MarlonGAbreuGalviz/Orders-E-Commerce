@@ -8,12 +8,11 @@ import org.springframework.web.bind.annotation.*;
 
 import com.fullstack.orders.dto.CreateOrderRequest;
 import com.fullstack.orders.dto.OrderResponse;
-import com.fullstack.orders.model.Order;
+import com.fullstack.orders.facade.OrderFacade;
 import com.fullstack.orders.model.OrderStatus;
-import com.fullstack.orders.service.OrderService;
 
+import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/orders")
@@ -21,45 +20,38 @@ import java.util.stream.Collectors;
 @CrossOrigin(origins = "*")
 public class OrderController {
 
-    private final OrderService orderService;
+    private final OrderFacade orderFacade;
 
     @PostMapping
     public ResponseEntity<OrderResponse> createOrder(@Valid @RequestBody CreateOrderRequest request) {
-        Order createdOrder = orderService.createOrder(request);
-        return ResponseEntity.status(HttpStatus.CREATED).body(OrderResponse.fromEntity(createdOrder));
+        OrderResponse response = orderFacade.crearPedido(request);
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
     @GetMapping
-    public ResponseEntity<?> getOrdersByRole(
+    public ResponseEntity<List<OrderResponse>> getOrdersByRole(
             @RequestHeader("X-User-Id") UUID userId,
             @RequestHeader("X-Role") String role
     ) {
-        return ResponseEntity.ok(
-                orderService.getOrdersByRole(userId, role)
-                        .stream()
-                        .map(OrderResponse::fromEntity)
-                        .collect(Collectors.toList())
-        );
+        return ResponseEntity.ok(orderFacade.listarPedidosPorRol(userId, role));
     }
 
     @GetMapping("/{orderId}")
-    public ResponseEntity<?> getOrderByIdByRole(
+    public ResponseEntity<OrderResponse> getOrderByIdByRole(
             @RequestHeader("X-User-Id") UUID userId,
             @RequestHeader("X-Role") String role,
             @PathVariable UUID orderId
     ) {
-        Order order = orderService.getOrderByIdByRole(userId, role, orderId);
-        return ResponseEntity.ok(OrderResponse.fromEntity(order));
+        return ResponseEntity.ok(orderFacade.buscarPedidoPorRol(userId, role, orderId));
     }
 
     @PatchMapping("/{orderId}/status")
-    public ResponseEntity<?> updateOrderStatusByRole(
+    public ResponseEntity<OrderResponse> updateOrderStatusByRole(
             @RequestHeader("X-User-Id") UUID userId,
             @RequestHeader("X-Role") String role,
             @PathVariable UUID orderId,
             @RequestParam OrderStatus status
     ) {
-        Order updatedOrder = orderService.updateOrderStatusByRole(userId, role, orderId, status);
-        return ResponseEntity.ok(OrderResponse.fromEntity(updatedOrder));
+        return ResponseEntity.ok(orderFacade.actualizarEstadoPorRol(userId, role, orderId, status));
     }
 }
