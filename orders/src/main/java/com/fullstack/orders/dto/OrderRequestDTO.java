@@ -10,7 +10,7 @@ import java.util.UUID;
 
 @Getter
 @Setter
-public class CreateOrderRequest {
+public class OrderRequestDTO {
 
     @NotNull(message = "El ID del usuario es obligatorio")
     private UUID userId;

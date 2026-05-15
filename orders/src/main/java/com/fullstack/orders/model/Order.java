@@ -20,25 +20,24 @@ public class Order {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    @Column(name = "id", nullable = false, updatable = false)
+    @Column(nullable = false, updatable = false)
     private UUID id;
 
-    @NotNull(message = "El ID del usuario es obligatorio")
+    @NotNull
     @Column(name = "user_id", nullable = false)
     private UUID userId;
 
-    @NotNull(message = "El ID del producto es obligatorio")
+    @NotNull
     @Column(name = "product_id", nullable = false)
     private UUID productId;
 
-    @NotNull(message = "La cantidad es obligatoria")
-    @Positive(message = "La cantidad debe ser mayor a 0")
+    @NotNull
+    @Positive
     @Column(nullable = false)
     private Integer quantity;
 
-    //Para más precisición en cálculos financieros
-    @NotNull(message = "El total es obligatorio")
-    @Positive(message = "El total debe ser mayor a 0")
+    @NotNull
+    @Positive
     @Column(nullable = false, precision = 12, scale = 2)
     private BigDecimal total;
 
@@ -49,12 +48,20 @@ public class Order {
     @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;
 
+    @Column(name = "updated_at")
+    private LocalDateTime updatedAt;
+
     @PrePersist
     public void prePersist() {
         this.createdAt = LocalDateTime.now();
 
         if (this.status == null) {
-            this.status = OrderStatus.CREATED;
+            this.status = OrderStatus.PENDING_PAYMENT;
         }
+    }
+
+    @PreUpdate
+    public void preUpdate() {
+        this.updatedAt = LocalDateTime.now();
     }
 }

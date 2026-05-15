@@ -1,16 +1,15 @@
 package com.fullstack.orders.controller;
 
+import com.fullstack.orders.dto.OrderRequestDTO;
+import com.fullstack.orders.dto.OrderResponseDTO;
+import com.fullstack.orders.dto.UpdateStatusDTO;
+import com.fullstack.orders.model.Order;
+import com.fullstack.orders.service.OrderService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import com.fullstack.orders.dto.CreateOrderRequest;
-import com.fullstack.orders.dto.OrderResponse;
-import com.fullstack.orders.model.Order;
-import com.fullstack.orders.model.OrderStatus;
-import com.fullstack.orders.service.OrderService;
 
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -24,9 +23,17 @@ public class OrderController {
     private final OrderService orderService;
 
     @PostMapping
-    public ResponseEntity<OrderResponse> createOrder(@Valid @RequestBody CreateOrderRequest request) {
-        Order createdOrder = orderService.createOrder(request);
-        return ResponseEntity.status(HttpStatus.CREATED).body(OrderResponse.fromEntity(createdOrder));
+    public ResponseEntity<OrderResponseDTO> createPendingOrder(
+            @Valid @RequestBody OrderRequestDTO request
+    ) {
+        Order order = orderService.createPendingOrder(request);
+        return ResponseEntity.status(HttpStatus.CREATED).body(OrderResponseDTO.fromEntity(order));
+    }
+
+    @PostMapping("/{orderId}/pay")
+    public ResponseEntity<OrderResponseDTO> payOrder(@PathVariable UUID orderId) {
+        Order order = orderService.payOrder(orderId);
+        return ResponseEntity.ok(OrderResponseDTO.fromEntity(order));
     }
 
     @GetMapping
@@ -37,29 +44,35 @@ public class OrderController {
         return ResponseEntity.ok(
                 orderService.getOrdersByRole(userId, role)
                         .stream()
-                        .map(OrderResponse::fromEntity)
+                        .map(OrderResponseDTO::fromEntity)
                         .collect(Collectors.toList())
         );
     }
 
     @GetMapping("/{orderId}")
-    public ResponseEntity<?> getOrderByIdByRole(
+    public ResponseEntity<OrderResponseDTO> getOrderByIdByRole(
             @RequestHeader("X-User-Id") UUID userId,
             @RequestHeader("X-Role") String role,
             @PathVariable UUID orderId
     ) {
         Order order = orderService.getOrderByIdByRole(userId, role, orderId);
-        return ResponseEntity.ok(OrderResponse.fromEntity(order));
+        return ResponseEntity.ok(OrderResponseDTO.fromEntity(order));
     }
 
     @PatchMapping("/{orderId}/status")
-    public ResponseEntity<?> updateOrderStatusByRole(
+    public ResponseEntity<OrderResponseDTO> updateOrderStatusByRole(
             @RequestHeader("X-User-Id") UUID userId,
             @RequestHeader("X-Role") String role,
             @PathVariable UUID orderId,
-            @RequestParam OrderStatus status
+            @Valid @RequestBody UpdateStatusDTO request
     ) {
-        Order updatedOrder = orderService.updateOrderStatusByRole(userId, role, orderId, status);
-        return ResponseEntity.ok(OrderResponse.fromEntity(updatedOrder));
+        Order order = orderService.updateOrderStatusByRole(
+                userId,
+                role,
+                orderId,
+                request.getStatus()
+        );
+
+        return ResponseEntity.ok(OrderResponseDTO.fromEntity(order));
     }
 }

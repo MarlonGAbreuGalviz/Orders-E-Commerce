@@ -1,4 +1,4 @@
-package cl.fullstack.orders;
+package com.fullstack.orders;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

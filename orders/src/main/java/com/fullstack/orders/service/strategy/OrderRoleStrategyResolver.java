@@ -1,4 +1,4 @@
-package com.fullstack.orders.strategy;
+package com.fullstack.orders.service.strategy;
 
 import org.springframework.stereotype.Component;
 

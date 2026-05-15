@@ -1,5 +1,7 @@
 package com.fullstack.orders.dto;
 
+import com.fullstack.orders.model.Order;
+import com.fullstack.orders.model.OrderStatus;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -7,12 +9,9 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
-import com.fullstack.orders.model.Order;
-import com.fullstack.orders.model.OrderStatus;
-
 @Getter
 @Builder
-public class OrderResponse {
+public class OrderResponseDTO {
 
     private UUID id;
     private UUID userId;
@@ -21,9 +20,10 @@ public class OrderResponse {
     private BigDecimal total;
     private OrderStatus status;
     private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
 
-    public static OrderResponse fromEntity(Order order) {
-        return OrderResponse.builder()
+    public static OrderResponseDTO fromEntity(Order order) {
+        return OrderResponseDTO.builder()
                 .id(order.getId())
                 .userId(order.getUserId())
                 .productId(order.getProductId())
@@ -31,6 +31,7 @@ public class OrderResponse {
                 .total(order.getTotal())
                 .status(order.getStatus())
                 .createdAt(order.getCreatedAt())
+                .updatedAt(order.getUpdatedAt())
                 .build();
     }
 }

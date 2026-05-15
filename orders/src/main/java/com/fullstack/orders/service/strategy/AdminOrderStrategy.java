@@ -1,23 +1,21 @@
-package com.fullstack.orders.strategy.impl;
-
-import org.springframework.http.HttpStatus;
-import org.springframework.stereotype.Component;
-import org.springframework.web.server.ResponseStatusException;
+package com.fullstack.orders.service.strategy;
 
 import com.fullstack.orders.model.Order;
 import com.fullstack.orders.model.OrderStatus;
 import com.fullstack.orders.repository.OrderRepository;
-import com.fullstack.orders.strategy.OrderRoleStrategy;
+import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Component;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.UUID;
 
 @Component
-public class AdminOrderStrategyImpl implements OrderRoleStrategy {
+public class AdminOrderStrategy implements OrderRoleStrategy {
 
     private final OrderRepository orderRepository;
 
-    public AdminOrderStrategyImpl(OrderRepository orderRepository) {
+    public AdminOrderStrategy(OrderRepository orderRepository) {
         this.orderRepository = orderRepository;
     }
 
