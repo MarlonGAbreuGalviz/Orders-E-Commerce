@@ -1,4 +1,4 @@
-package cl.fullstack.orders;
+package com.fullstack.orders;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
